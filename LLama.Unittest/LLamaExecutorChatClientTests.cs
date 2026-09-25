@@ -86,23 +86,6 @@ public sealed class LLamaExecutorChatClientTests
     }
 
     [Fact]
-    public async Task RawRepresentationDefaultSamplingPipelineIsReused()
-    {
-        var executor = new CapturingExecutor();
-        var sampling = new DefaultSamplingPipeline { Temperature = 0.1f, Seed = 42 };
-
-        await executor.AsChatClient().GetResponseAsync("hello", new ChatOptions
-        {
-            Seed = 7,
-            RawRepresentationFactory = _ => new InferenceParams { SamplingPipeline = sampling },
-        });
-
-        Assert.Same(sampling, executor.InferenceParams?.SamplingPipeline);
-        Assert.Equal(0.1f, sampling.Temperature);
-        Assert.Equal(7u, sampling.Seed);
-    }
-
-    [Fact]
     public async Task MaxTokensDefaultsTo256WithoutALimit()
     {
         var executor = new CapturingExecutor();

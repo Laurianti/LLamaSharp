@@ -150,20 +150,6 @@ public static class LLamaExecutorExtensions
                 return ip;
             }
 
-            // A DefaultSamplingPipeline is reused when the chat options change nothing but the seed, which can be
-            // set on it; the other settings can only be given when it is constructed.
-            if (ip.SamplingPipeline is DefaultSamplingPipeline existing
-                && options is not { FrequencyPenalty: not null } and not { PresencePenalty: not null }
-                    and not { Temperature: not null } and not { TopP: not null } and not { TopK: not null })
-            {
-                if (options?.Seed is long existingSeed)
-                {
-                    existing.Seed = (uint)existingSeed;
-                }
-
-                return ip;
-            }
-
             ip.SamplingPipeline = new DefaultSamplingPipeline()
             {
                 FrequencyPenalty = options?.FrequencyPenalty ?? (ip.SamplingPipeline as DefaultSamplingPipeline)?.FrequencyPenalty ?? s_defaultPipeline.FrequencyPenalty,
