@@ -32,6 +32,19 @@ public sealed class LLamaExecutorChatClientTests
     }
 
     [Fact]
+    public async Task RawRepresentationUnlimitedMaxTokensIsKept()
+    {
+        var executor = new CapturingExecutor();
+
+        await executor.AsChatClient().GetResponseAsync("hello", new ChatOptions
+        {
+            RawRepresentationFactory = _ => new InferenceParams { MaxTokens = -1 },
+        });
+
+        Assert.Equal(-1, executor.InferenceParams!.MaxTokens);
+    }
+
+    [Fact]
     public async Task ChatOptionsOverrideRawRepresentationSettings()
     {
         var executor = new CapturingExecutor();

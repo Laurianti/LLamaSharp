@@ -138,10 +138,11 @@ public static class LLamaExecutorExtensions
         /// <summary>Convert the chat options to inference parameters.</summary>
         private InferenceParams CreateInferenceParams(ChatOptions? options)
         {
-            InferenceParams ip = options?.RawRepresentationFactory?.Invoke(this) as InferenceParams ?? new();
+            var raw = options?.RawRepresentationFactory?.Invoke(this) as InferenceParams;
+            InferenceParams ip = raw ?? new();
 
             ip.AntiPrompts = [.. s_antiPrompts, .. ip.AntiPrompts];
-            ip.MaxTokens = options?.MaxOutputTokens ?? (ip.MaxTokens > 0 ? ip.MaxTokens : 256); // arbitrary upper limit when none is given
+            ip.MaxTokens = options?.MaxOutputTokens ?? (raw is null ? 256 : ip.MaxTokens); // arbitrary upper limit when no InferenceParams are given
 
             // A sampling pipeline other than DefaultSamplingPipeline is kept as given: the chat options cannot be applied to it.
             if (ip.SamplingPipeline is not null and not DefaultSamplingPipeline)
