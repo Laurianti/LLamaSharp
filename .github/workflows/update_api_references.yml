@@ -29,6 +29,10 @@ jobs:
         cd LLama/bin/Debug/net8.0
         rm -rf ../../../../docs/xmldocs
         xmldoc2md LLamaSharp.dll -o ../../../../docs/xmldocs --back-button
+        # XMLDoc2Markdown 6 also writes the compiler's fixed buffer types, named like <key>e__FixedBuffer,
+        # which Windows cannot check out
+        find ../../../../docs/xmldocs -name '*[<>]*' -delete
+        sed -i '/e__fixedbuffer\.md)/d' ../../../../docs/xmldocs/index.md
     
     - name: Commit and push changes
       run: |
