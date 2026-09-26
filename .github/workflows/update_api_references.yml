@@ -1,21 +1,22 @@
 name: Update API references
 on:
-  pull_request_review:
-    types: [submitted]
+  push:
+    branches: [master]
+    paths: ['LLama/**']
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   update_api_references:
-    if: github.event.pull_request.base.ref == 'master' && github.event.review.state == 'approved'
+    if: github.repository == 'SciSharp/LLamaSharp'
     name: Update API References
     runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v6
       with:
-        ref: ${{ github.event.pull_request.head.ref }}
+        token: ${{ secrets.REPO_TOKEN || github.token }}
     - uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
@@ -44,6 +45,4 @@ jobs:
         git diff --cached --name-only
         git commit -m "chore(docs): update API references in the github action."
         git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
 
