@@ -16,7 +16,7 @@ using static LLama.StatefulExecutorBase;
 namespace LLama;
 
 /// <summary>
-/// The main chat session class (fallback test 1790865141).
+/// The main chat session class (fallback test 1790865228).
 /// </summary>
 public class ChatSession
 {
